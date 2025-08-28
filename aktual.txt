@@ -1,0 +1,44 @@
+20-08-2025 - !!! KRYTYCZNA AKTUALIZACJA !!! - należy jak najszybciej aktualizować wszystkie terminale do wersji aplikacji APP: 24.102.3.28
+07-04-2025 - oficjalnie mamy nową werję oprogramowania V24.102.3(G00) 2025 Spring Version
+12-01-2025 - dostepna jest wersja BETA oprogramowanie przeznaczona do testów. Chętni powinni zgłaszać się do FAE ze swojego regionu. SVEA V24.102.3 (G00_Trial). Wersja ta przeznaczona jest do F100, F100H (steer ready CANBUS, NON-CAN), and F200
+- Nowa linia kombinowana
+- Dodano Baseline Create Rename (domyślnie wyłączone)
+- Zoptymalizowano zakres kąta kursu, aby był zgodny z linią A +, 0 ~ 360 °. (Poprzednio -180 ° ~ 180 °)
+- Dodano monitorowanie danych pracy ciągnika (wymaga dodatkowego zakupu WiFi CAN)
+- Nowy Szybki import informacji o pojeździe. Wybierając typ pojazdu, markę pojazdu i model pojazdu, niektóre informacje o pojeździe są automatycznie uzupełniane
+- Dodano regulację parametrów jednym przyciskiem. W interfejsie debugowania współczynników kliknij debugowanie jednym przyciskiem, aby automatycznie dostosować parametry sterowania pojazdem (takie jak współczynnik on-line, współczynnik stabilizacji linii, parametry ustawień, wartość P, model sterowania itp.) zgodnie z uzyskanymi podstawowymi parametrami pojazdu (takie jak model, moc, parametry fizyczne pojazdu, wersja silnika, typ czujnika kąta).
+- Zoptymalizowano wyświetlanie procesu ładowania puli obiektów VT
+- Weryfikacja konfliktów liczb VT
+- Optymalizacja strategii sterowania TC-SC
+- Nowa funkcja TC-GEO
+- Nowa funkcja AUX-N
+- Optymalizacja ustawień ISOBUS. Bogate ustawienia związane z ISOBUS, takie jak informacje o wersji modułu komunikacyjnego, kod producenta, ustawienia limitu czasu połączenia, mechanizm retransmisji CTS, dźwięk alarmu.
+- Powiązanie implementacji ISOBUS i optymalizacja synchronizacji parametrów
+- Symulacja pozycji ciągniętych narzędzi
+- Elektryczne wspomaganie kierownicy
+
+!!!Oraz wiele innych!!!
+
+
+01-09-2024 - dostepna jest wersja BETA oprogramowanie przeznaczona do testów. Chętni powinni zgłaszać się do FAE ze swojego regionu. Wersja BETA obsługuje między innymi TC-SC, Mini Control, obraz lustrzany kamery
+
+22-07-2024 - zbieramy zapisy na sesję treningowe przed egzaminami certyfikującymi dla Dealerów. proszę zgłaszać się do FAE odpowiedzialnego za państwa region.
+Zgłoszenia zbierane są poprzez ankietę google:
+
+Wersja w języku Angielskim:
+
+https://forms.gle/v7MtwJgufLay6edU9 
+
+Wersja w języku Polskim:
+
+htt-ps://forms.gle/MrLdtb3MiV1XdvNZ6 
+
+18-07-2024 - FMS update
+
+1. Obsługa przesyłania zdjęć w rejestrze operacji
+2. Obsługa eksportu pojedynczego rejestru operacji do formatu PDF, z możliwością dołączania zdjęć ścieżki
+3. Wszystkie dane po stronie platformy będą wskazywać, czy synchronizacja została zakończona
+4. Linie prowadzenia i pola w terminalu wspierają edytowanie nazw i granic
+5. W linii prowadzenia - typ krzywej dodano nową metodę rysowania dowolnej krzywej
+6. Dane linii prowadzenia i pola mogą być udostępniane kontom trzecim przez platformę, co jest podobne do udostępniania z terminala
+

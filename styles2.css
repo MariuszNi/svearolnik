@@ -1,0 +1,98 @@
+/* styles2.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+#game-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+#instructions {
+    margin-right: 20px;
+    text-align: left;
+    width: 200px;
+}
+
+#instructions h2 {
+    margin-bottom: 10px;
+}
+
+#instructions p {
+    margin: 5px;
+    font-size: 16px;
+}
+
+#game-container {
+    position: relative;
+    width: 520px; /* Increase width by 30% */
+    height: 780px; /* Increase height by 30% */
+    background: url('background.jpg') repeat-y center top/cover;
+    overflow: hidden;
+    border: 2px solid #555;
+}
+
+#tractor {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    width: 100px; /* Double the original size */
+    height: 100px; /* Double the original size */
+    background: url('tractor.png') no-repeat center center/contain;
+    transform: translateX(-50%);
+}
+
+.hay-bale, .rabbit, .stone {
+    position: absolute;
+    background-size: cover;
+}
+
+.hay-bale {
+    width: 60px; /* Double the original size */
+    height: 60px; /* Double the original size */
+    background: url('hay-bale.png') no-repeat center center/contain;
+}
+
+.rabbit {
+    width: 30px;
+    height: 30px;
+    background: url('rabbit.png') no-repeat center center/contain;
+}
+
+.stone {
+    width: 30px;
+    height: 30px;
+    background: url('stone.png') no-repeat center center/contain;
+}
+
+#controls {
+    margin-left: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#scoreboard {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#scoreboard p {
+    margin: 5px;
+    font-size: 18px;
+}

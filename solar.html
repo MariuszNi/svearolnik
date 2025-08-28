@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Status aktywności słonecznej</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f6f6f6; padding: 20px; }
+    .status-box {
+      background: #fff;
+      padding: 16px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-weight: bold;
+    }
+    .low { background-color: #c8e6c9; }
+    .moderate { background-color: #fff176; }
+    .high { background-color: #ff9800; }
+    .extreme { background-color: #e53935; color: white; }
+    .error { color: red; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div id="google_translate_element" style="margin-bottom: 20px;"></div>
+
+<h1>Status aktywności słonecznej</h1>
+<div id="solar-status" class="status-box">Ładowanie danych...</div>
+<div id="xray-status" class="status-box">Ładowanie danych promieniowania rentgenowskiego...</div>
+<div id="proton-status" class="status-box">Ładowanie danych strumienia protonów...</div>
+<div id="error" class="error"></div>
+
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'pl',
+      includedLanguages: 'pl,en,es,de,fr',
+      layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+    }, 'google_translate_element');
+  }
+
+  async function loadSolarStatus() {
+    const kpBox = document.getElementById('solar-status');
+    const xrayBox = document.getElementById('xray-status');
+    const protonBox = document.getElementById('proton-status');
+    const errorBox = document.getElementById('error');
+
+    try {
+      // Fetch Kp index
+      const kpResponse = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+      const kpData = await kpResponse.json();
+      const latestKp = kpData[kpData.length - 1];
+      const kp = parseFloat(latestKp.kp_index);
+
+      kpBox.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+      kpBox.classList.remove("low", "moderate", "high", "extreme");
+      if (kp >= 7) kpBox.classList.add("extreme");
+      else if (kp >= 6) kpBox.classList.add("high");
+      else if (kp >= 5) kpBox.classList.add("moderate");
+      else kpBox.classList.add("low");
+
+      // Fetch X-ray flux
+      const xrayResponse = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
+      const xrayData = await xrayResponse.json();
+      const lastXray = xrayData[xrayData.length - 1];
+      xrayBox.innerText = `Promieniowanie rentgenowskie (X-ray flux): ${lastXray.flux}`;
+      xrayBox.style.backgroundColor = '#ffe0b2';
+
+      // Fetch Proton flux
+      const protonResponse = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
+      const protonData = await protonResponse.json();
+      const lastProton = protonData[protonData.length - 1];
+      protonBox.innerText = `Strumień protonów (Proton flux): ${lastProton.proton_flux} pfu`;
+      protonBox.style.backgroundColor = '#dcedc8';
+
+    } catch (err) {
+      errorBox.innerText = 'Błąd ładowania danych z NOAA. Spróbuj ponownie później.';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadSolarStatus);
+</script>
+
+</body>
+</html>
