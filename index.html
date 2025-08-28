@@ -4,25 +4,101 @@
   <meta charset="UTF-8" />
   <title>Sveaverken - Filmy i Instrukcje</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <!-- Google Translate -->
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
   <style>
-    /* --- style bez zmian --- */
+    :root{
+      --brand:#002b5c;
+      --brand-2:#003366;
+      --text:#111;
+      --muted:#666;
+      --bg:#fff;
+      --card:#f7f9fc;
+      --shadow:0 2px 8px rgba(0,0,0,.12);
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg);}
+    nav{background:var(--brand); position:sticky; top:0; z-index:1000; box-shadow:0 2px 6px rgba(0,0,0,.2);}
+    .nav-inner{max-width:1200px; margin:0 auto; display:flex; gap:16px; align-items:center; padding:10px 20px; flex-wrap:wrap;}
+    .brand{color:#fff; font-weight:700; font-size:18px; margin-right:auto}
+    nav a{color:#fff; text-decoration:none; padding:6px 8px; border-radius:8px}
+    nav a:focus-visible, nav a:hover{text-decoration:underline; outline:none}
+    header{background:var(--brand-2); color:#fff; padding:36px 20px}
+    .header-wrap{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:32px; align-items:start;}
+    .logo-card,.fw-card{background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:12px}
+    .logo-card img{max-width:160px; width:100%; height:auto}
+    .fw-card{background:#004080; color:#fff}
+    table{width:100%; border-collapse:collapse; margin-top:16px; font-size:15px}
+    th,td{border:1px solid #e5e7eb; padding:8px 12px; text-align:left}
+    thead{background:#f0f0f0}
+    tbody tr:nth-child(even){background:#fafafa}
+    main{max-width:1200px; margin:0 auto; padding:20px}
+    section{margin:28px 0}
+    h1,h2{margin:0 0 12px}
+    .muted{color:var(--muted)}
+    .button-container{margin:16px 0}
+    button{border:0; border-radius:10px; padding:10px 14px; box-shadow:var(--shadow); background:#005bbb; color:#fff; font-weight:600; cursor:pointer;}
+    button:focus-visible{outline:3px solid #99c2ff}
+    #search-input{width:100%; max-width:420px; padding:10px 12px; border:1px solid #ddd; border-radius:10px; box-shadow: inset 0 1px 2px rgba(0,0,0,.04);}
+    #kp-widget{background-color:#e0e0e0; padding:12px 16px; border-radius:12px; margin:10px auto 6px; max-width:480px; font-weight:700; box-shadow:0 2px 8px rgba(0,0,0,.2); transition:background-color .5s ease;}
+    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px;}
+    .popup{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:2000;}
+    .popup-content{background:#fff; width:min(720px,92vw); margin:8vh auto; padding:18px; border-radius:16px; box-shadow:var(--shadow); max-height:84vh; overflow:auto;}
+    .close-button{float:right; font-size:28px; cursor:pointer; line-height:1}
+    .close-button:focus-visible{outline:3px solid #99c2ff}
+    .tractor-container{position:fixed; bottom:40px; left:-200px; width:120px; z-index:9999; animation:drive 26s ease-in-out forwards;}
+    .tractor{width:100%; animation:bounce .8s infinite alternate}
+    .smoke{position:absolute; top:-20px; left:10px; width:20px; height:20px; background:radial-gradient(circle,#999 0%,transparent 70%); border-radius:50%; opacity:.7; animation:smokeUp 2s ease-out forwards;}
+    @keyframes drive{0%{left:-200px}100%{left:110%}}
+    @keyframes bounce{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}
+    @keyframes smokeUp{0%{transform:translateY(0) scale(1); opacity:.7}100%{transform:translateY(-50px) scale(1.8); opacity:0}}
+    @media (prefers-reduced-motion: reduce){.tractor-container,.tractor,.smoke{animation:none}}
+    footer{padding:24px 20px; text-align:center; color:var(--muted)}
   </style>
+
   <script>
-    /* --- skrypty bez zmian --- */
+    function googleTranslateElementInit() {
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'pl',
+          includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      } catch(e) {}
+    }
+    async function fetchKpData(){const res=await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');return await res.json();}
+    function colorForKp(kp){if(kp>=7)return '#e53935';if(kp>=6)return '#ff9800';if(kp>=5)return '#ffeb3b';return '#8bc34a';}
+    let kpChart;
+    async function updateKpIndex(){
+      try{const data=await fetchKpData();const last=data[data.length-1];const kp=parseFloat(last.kp_index).toFixed(1);
+        const box=document.getElementById('kp-widget');box.textContent=`Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+        box.style.backgroundColor=colorForKp(parseFloat(kp));
+        const tail=data.slice(-180);const labels=tail.map(d=>d.time_tag.slice(11,19));const values=tail.map(d=>Number(d.kp_index));
+        const ctx=document.getElementById('kpChart').getContext('2d');
+        if(kpChart){kpChart.data.labels=labels;kpChart.data.datasets[0].data=values;kpChart.update();}
+        else{kpChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Kp (ostatnie 3h, 1-min)',data:values,tension:.25,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{suggestedMin:0,suggestedMax:9,ticks:{stepSize:1}},x:{ticks:{maxTicksLimit:8}}},plugins:{legend:{display:false}}}});}
+      }catch(e){console.error('KP fetch error',e);}
+    }
+    setInterval(updateKpIndex,60000);
+    function fetchNews(){fetch('aktual.txt').then(r=>r.text()).then(t=>{document.getElementById('news-content').innerHTML=t.replace(/\n/g,'<br>');}).catch(err=>console.error('Błąd wczytywania aktualności:',err));}
+    function openPopup(){document.getElementById('popup').style.display='block';}
+    function closePopup(){document.getElementById('popup').style.display='none';}
+    function filterContent(){const q=document.getElementById('search-input').value.trim().toLowerCase();const sections=document.querySelectorAll('main section');sections.forEach(section=>{const items=section.querySelectorAll('li, p, a, h2, h3');let hit=false;items.forEach(el=>{const txt=(el.textContent||'').toLowerCase();const show=!q||txt.includes(q);el.style.display=show?'':'none';if(show)hit=true;});section.style.display=hit?'':'none';});}
+    document.addEventListener('DOMContentLoaded',()=>{fetchNews();updateKpIndex();document.getElementById('search-input').addEventListener('input',filterContent);window.addEventListener('click',(e)=>{if(e.target.id==='popup')closePopup();});});
   </script>
 </head>
 <body>
-  <!-- 🚜 Animacja traktorka -->
-  <div class="tractor-container" aria-hidden="true">
-    <img src="tractor.png" class="tractor" alt="" />
-    <div class="smoke"></div>
-  </div>
+  <div class="tractor-container"><img src="tractor.png" class="tractor" alt="" /><div class="smoke"></div></div>
 
-  <!-- 🌐 MENU -->
-  <nav>
-    <div class="nav-inner">
+  <nav><div class="nav-inner">
       <div class="brand">Sveaverken</div>
       <a href="#home">Strona główna</a>
       <a href="#getting-started">Pierwsze kroki</a>
@@ -31,70 +107,59 @@
       <a href="#problemy">Problemy</a>
       <a href="#stacje-bazowe">Stacje bazowe</a>
       <a href="#video-list">Filmy YouTube</a>
-      <div id="google_translate_element" style="margin-left:8px"></div>
-    </div>
-  </nav>
+      <div id="google_translate_element"></div>
+  </div></nav>
 
-  <!-- 🔷 Header -->
-  <header>
-    <!-- zostaje logo i wersja FW -->
-  </header>
+  <header><div class="header-wrap">
+    <div class="logo-card"><img src="logo.png" alt="Logo Sveaverken"/><div><img src="SVEA F100.webp" alt="SVEA F100"/></div></div>
+    <div class="fw-card"><h2 style="text-align:center">Aktualna wersja oprogramowania</h2>
+      <p><strong>APP:</strong> 24.102.3.28</p>
+      <p><strong>ECU1 old:</strong> 3.0.5.3</p>
+      <p><strong>ECU2 new:</strong> 103.0.4.12</p>
+      <p><strong>IMU:</strong> 3.0.0.79</p>
+      <p><strong>Motor old:</strong> 1.1.13.9</p>
+      <p><strong>Motor NEW:</strong> 2.1.1.8</p>
+      <p><strong>Board L1 old:</strong> 23005</p>
+      <p><strong>Board L3 new:</strong> 11491</p>
+      <p><strong>System:</strong> 202501081622</p>
+      <p><strong>Radio 1:</strong> J017.00.05.0</p>
+      <p><strong>Radio 2:</strong> 35.0.0.0</p>
+    </div>
+  </div></header>
 
   <main id="home">
-    <!-- KP + aktualności -->
     <div id="kp-widget">Ładowanie danych geomagnetycznych...</div>
-    <div class="card"><canvas id="kpChart"></canvas></div>
+    <div class="card" style="max-width:720px;margin:10px auto"><canvas id="kpChart"></canvas></div>
     <button onclick="openPopup()">📰 Sprawdź najnowsze informacje</button>
     <input type="text" id="search-input" placeholder="Szukaj w treści...">
 
-    <!-- Aktualności popup -->
-    <div id="popup" class="popup"><div class="popup-content"><button onclick="closePopup()">&times;</button><h2>Aktualności</h2><div id="news-content"></div></div></div>
+    <div id="popup" class="popup"><div class="popup-content"><button class="close-button" onclick="closePopup()">&times;</button><h2>Aktualności</h2><div id="news-content" class="muted"></div></div></div>
 
-    <!-- Status & mapy -->
-    <section id="solar-status"><h2>Status aktywności słonecznej</h2>
-      <ul><li><a href="https://www.swpc.noaa.gov/communities/global-positioning-system-gps-community-dashboard" target="_blank">Dashboard GPS – NOAA SWPC</a></li></ul>
-    </section>
-    <section id="gps-interference-map"><h2>Mapa zakłóceń sygnału GPS</h2>
-      <ul><li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Flightradar24 – GPS jamming</a></li></ul>
-    </section>
-
-    <!-- NTRIP / NMEA / ISOBUS -->
+    <section id="solar-status"><h2>Status aktywności słonecznej</h2><ul><li><a href="https://www.swpc.noaa.gov/communities/global-positioning-system-gps-community-dashboard" target="_blank">Dashboard GPS – NOAA SWPC</a></li></ul></section>
+    <section id="gps-interference-map"><h2>Mapa zakłóceń sygnału GPS</h2><ul><li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Flightradar24 – GPS jamming</a></li></ul></section>
     <section id="ntrip"><h2>NTRIP</h2><ul><li><a href="NTRIP.html" target="_blank">Dostawcy NTRIP w Europie</a></li></ul></section>
     <section id="nmea"><h2>NMEA 0183 v4.1</h2><ul><li><a href="nmea.html" target="_blank">NMEA 0183 v4.1</a></li></ul></section>
     <section id="isobus"><h2>ISOBUS</h2><ul><li><a href="isobus.html" target="_blank">ISOBUS</a></li></ul></section>
-
-    <!-- Video tutoriale -->
-    <section id="getting-started">...</section>
-    <section id="next-step">...</section>
-
-    <!-- Problemy -->
-    <section id="problemy">...</section>
-
-    <!-- Instrukcje F100 -->
-    <section id="manuals">...</section>
-
-    <!-- F100H + CAN -->
-    <section id="f100h-noncan">...</section>
-
-    <!-- Stacje bazowe -->
-    <section id="stacje-bazowe">...</section>
-
-    <!-- Bonus gry -->
-    <section id="bonus"><h2>BONUS</h2>
-      <ul>
-        <li><a href="tracgame.html" target="_blank">Gra traktor</a></li>
-        <li><a href="Game.html" target="_blank">O&X</a></li>
-        <li><a href="snake.html" target="_blank">Wąż</a></li>
-      </ul>
+    <section id="getting-started"><h2>Pierwsze kroki – VIDEO TUTORIAL</h2>
+      <ul><li><a href="https://drive.google.com/file/d/19sgjlq9vhnwjyPkLuo_DnxFmH677UJMJ/view?usp=drivesdk" target="_blank">Utworzenie konta</a></li>
+      <li><a href="https://drive.google.com/file/d/1hRWlQyibGXSVix895dbH-fWaTcF9rZPL/view?usp=drivesdk" target="_blank">Źródło sygnału korekcyjnego</a></li></ul>
     </section>
-
-    <!-- Filmy YT -->
+    <section id="next-step"><h2>Funkcje F100 – VIDEO TUTORIAL</h2>
+      <ul><li><a href="https://drive.google.com/open?id=1rmRgQdd9gllM8B2ZP1Am1Lx8PK1q930S&usp=drive_fs" target="_blank">Tworzenie linii A+</a></li></ul>
+    </section>
+    <section id="problemy"><h2>Rozwiązywanie problemów</h2><ul><li><a href="https://drive.google.com/open?id=1MIqILb1dPGc1P7r08Sz0ibBVN0PANYi3&usp=drive_fs" target="_blank">Jak wyczyścić cache</a></li></ul></section>
+    <section id="manuals"><h2>Instrukcje F100</h2><ul><li><a href="https://drive.google.com/drive/folders/1qdx5cS1ztcoLIucgLVFVsQPANHQo1j-U?usp=sharing" target="_blank">Dysk Google</a></li></ul></section>
+    <section id="f100h-noncan"><h2>F100H NON-CAN</h2><ul><li><a href="https://docs.google.com/presentation/d/1-Gd1DP-ocQTwvFX8Yxtd3y-rmiORPAkY/edit?usp=drivesdk" target="_blank">Prezentacja systemu F100H</a></li></ul>
+      <section id="f100h-can"><h2>CANBUS</h2><ul><li><a href="canbus.html" target="_blank">Canbus</a></li></ul></section>
+    </section>
+    <section id="stacje-bazowe"><h2>Stacje bazowe</h2><ul><li><a href="https://drive.google.com/open?id=1H4Qg8U8veIpneX6O8DlWMI6qLLrG5Bt0&usp=drive_fs" target="_blank">Sveaverken CORS N10</a></li></ul></section>
+    <section id="bonus"><h2>BONUS</h2><ul><li><a href="tracgame.html" target="_blank">Gra traktor</a></li><li><a href="Game.html" target="_blank">O&X</a></li><li><a href="snake.html" target="_blank">Wąż</a></li></ul></section>
     <section id="video-list"><h2>Linki do filmów</h2><ul><li><a href="Videos.html" target="_blank">Lista filmów</a></li></ul></section>
   </main>
 
   <footer>
     <p>&copy; 2024 Sveaverken — <a href="https://www.sveaverken.com" target="_blank">www.sveaverken.com</a></p>
-    <p>Sugestie: <a href="mailto:mariusz.niezgoda@sveav.com">mariusz.niezgoda@sveav.com</a></p>
+    <p>Sugestie i pytania: <a href="mailto:mariusz.niezgoda@sveav.com">mariusz.niezgoda@sveav.com</a></p>
   </footer>
 </body>
 </html>
