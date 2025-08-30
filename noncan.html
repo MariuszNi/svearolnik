@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sveaverken F100H — NON-CAN (Hydraulika)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Instalacja F100H w traktorach NON-CAN: rozpoznanie układu hydraulicznego, wybór zaworu, okablowanie, czujnik ciśnienia, kalibracja i testy." />
+
+  <!-- Google Translate -->
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  <script>
+    function googleTranslateElementInit(){
+      try{
+        new google.translate.TranslateElement({
+          pageLanguage:'pl',
+          includedLanguages:'en,es,fr,de,it,pt,ru,uk,cs,sk,hu,ro,bg,el,tr,zh-CN,ja,ko',
+          layout:google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay:false
+        },'google_translate_element');
+      }catch(e){}
+    }
+  </script>
+
+  <style>
+    :root{
+      --brand:#002b5c; --brand-2:#003366; --text:#111; --muted:#666;
+      --bg:#fff; --card:#f7f9fc; --shadow:0 2px 8px rgba(0,0,0,.12);
+      --radius:12px; --accent:#005bbb;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg)}
+    a{color:var(--accent); text-decoration:none} a:hover{text-decoration:underline}
+    nav{background:var(--brand); position:sticky; top:0; z-index:1000; box-shadow:0 2px 6px rgba(0,0,0,.2)}
+    .nav-inner{max-width:1200px; margin:0 auto; display:flex; gap:16px; align-items:center; padding:10px 20px; flex-wrap:wrap}
+    .brand{color:#fff; font-weight:700; font-size:18px; margin-right:auto}
+    nav a{color:#fff; padding:6px 8px; border-radius:8px}
+    nav a:hover, nav a:focus-visible{text-decoration:underline; outline:none}
+    #google_translate_element{margin-left:auto}
+
+    header{background:linear-gradient(135deg,var(--brand-2),#004a8f); color:#fff; padding:36px 20px}
+    .hero{max-width:1200px; margin:0 auto}
+    .hero h1{margin:0 0 8px; font-size:28px}
+    .hero p{margin:0; color:#e6eef9}
+
+    main{max-width:1200px; margin:0 auto; padding:24px 20px}
+    section{margin:28px 0}
+    h2{margin:0 0 12px; font-size:22px}
+    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px}
+    .muted{color:var(--muted)}
+    .grid{display:grid; gap:16px}
+    .grid-2{grid-template-columns:repeat(2,minmax(260px,1fr))}
+    @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
+
+    table{width:100%; border-collapse:collapse; font-size:15px}
+    th,td{border:1px solid #e5e7eb; padding:8px 10px; text-align:left}
+    thead tr{background:#f0f0f0}
+
+    .notice{background:#fff8e1; border-left:4px solid #ffb300; padding:10px 12px; border-radius:8px}
+    .danger{background:#ffeaea; border-left:4px solid #e53935; padding:10px 12px; border-radius:8px}
+    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .btn{display:inline-block; background:var(--accent); color:#fff; padding:9px 12px; border-radius:10px; font-weight:600; box-shadow:var(--shadow)}
+    .btn.secondary{background:#fff; color:var(--accent); border:1px solid #cfe2ff}
+    .img-wrap{background:#fff; border-radius:12px; box-shadow:var(--shadow); padding:8px; overflow:auto}
+    .img-wrap img{max-width:100%; height:auto; display:block; border-radius:8px}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">Sveaverken</div>
+      <a href="index.html">Strona główna</a>
+      <a href="precision.html">Rolnictwo Precyzyjne</a>
+      <a href="noncan.html" aria-current="page">F100H NON-CAN</a>
+      <a href="NTRIP.html">NTRIP</a>
+      <a href="isobus.html">ISOBUS</a>
+      <a href="Videos.html">Filmy</a>
+      <div id="google_translate_element"></div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="hero">
+      <h1>F100H NON-CAN — montaż hydrauliczny</h1>
+      <p>Dobór zaworu, połączenia hydrauliczne i elektryczne, kalibracja czujnika ciśnienia, testy.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>🔎 Cel i zakres</h2>
+      <p>Ta strona dotyczy instalacji F100H w traktorach bez fabrycznego CAN/SteerReady, czyli z dołożonym sterowaniem hydraulicznym (zawór proporcjonalny/kompatybilny, ewentualnie zawór 6/2).</p>
+      <div class="danger" style="margin-top:10px">
+        <strong>Bezpieczeństwo:</strong> montaż hydrauliki musi wykonać wykwalifikowany personel; systemu nie używać na drogach publicznych. Kierowca musi zawsze móc przejąć kontrolę i zatrzymać maszynę. :contentReference[oaicite:0]{index=0}
+      </div>
+    </section>
+
+    <section>
+      <h2>📋 Rozpoznanie układu kierowniczego</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3 style="margin-top:0">Typy układów</h3>
+          <ul>
+            <li>Open center: <em>Reactive</em> lub <em>Non-reactive</em></li>
+            <li>Closed center: z LS <em>dynamic</em> lub <em>static</em> (zwykle Non-reactive)</li>
+          </ul>
+          <p class="muted">Sprawdź tabliczkę orbitrola (ON/ORM/CN/LSRM) albo instrukcję ciągnika. :contentReference[oaicite:1]{index=1}</p>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Szybka próba</h3>
+          <p>Jeśli nie masz pewności Reactive/Non-reactive: podłącz zawór jak dla Non-reactive i uruchom auto-sterowanie:</p>
+          <ul>
+            <li>Koło kierownicy obraca się samo → <strong>Reactive</strong></li>
+            <li>Koło stoi → <strong>Non-reactive</strong></li>
+          </ul>
+          <p class="muted">Dla Reactive z zaworem open-center potrzebny jest dodatkowy zawór 6/2. :contentReference[oaicite:2]{index=2}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🧩 Wybór zaworu</h2>
+      <ul>
+        <li>30 L/min — open center</li>
+        <li>60 L/min — open center</li>
+        <li>60 L/min — closed center</li>
+        <li>30 L/min — <strong>compatible</strong> (obsługuje open/closed do 30 L/min, LS static/dynamic) :contentReference[oaicite:3]{index=3}</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>🗺️ Przegląd okablowania (NON-CAN)</h2>
+      <div class="img-wrap">
+        <!-- Zamień na własną nazwę jeśli inaczej zapiszesz plik -->
+        <img src="F100H%20non%20can%20wires.jpg" alt="Schemat wiązek i podłączeń NON-CAN F100H">
+      </div>
+      <p class="muted" style="margin-top:8px">Na rysunku zaznaczono: czujnik ciśnienia (port P na zaworze, lub zgodnie z modelem), czujnik kąta, wiązkę zaworu proporcjonalnego, wiązkę zaworu przeciwciśnienia oraz ewentualny powrót do zaworu back-pressure.</p>
+    </section>
+
+    <section class="card">
+      <h2>🔌 Połączenia hydrauliczne — skrócona ściąga</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr><th>Scenariusz</th><th>Kluczowe połączenia</th><th>Notatki</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Open center — <strong>Non-reactive</strong></td>
+              <td>
+                P→pompa, T→filtr, EF→orbitrol P, L→cyl/Orbitrol L (trójnik), R→cyl/Orbitrol R (trójnik). Czujnik ciśnienia na porcie MEF. :contentReference[oaicite:4]{index=4}
+              </td>
+              <td>30 L/min: P/T/EF/A/B G3/8, inne G1/4. 60 L/min: P/T/EF G1/2, A/B G3/8. :contentReference[oaicite:5]{index=5}</td>
+            </tr>
+            <tr>
+              <td>Open center — <strong>Reactive</strong> + zawór 6/2</td>
+              <td>
+                P→pompa, T→filtr, EF→orbitrol P, L→6/2 C2, R→6/2 C3; 6/2: P1/P2→cylinder, C1/C4→orbitrol L/R (oryg. przewody). :contentReference[oaicite:6]{index=6}
+              </td>
+              <td>Aktywne auto-ster.: zasil 12 V na 6/2 (C2/C3→zawór). Manual/off: C1/C4→orbitrol. :contentReference[oaicite:7]{index=7}</td>
+            </tr>
+            <tr>
+              <td>30 L/min <strong>compatible</strong> — Open center</td>
+              <td>P→pompa, T→filtr, EF→orbitrol P, L/R→orbitrol L/R (oryg.), G/D→cylinder. Czujnik na M3. :contentReference[oaicite:8]{index=8}</td>
+              <td>P/T G1/2; L/R/D/G/EF G3/8. :contentReference[oaicite:9]{index=9}</td>
+            </tr>
+            <tr>
+              <td>Closed center — <strong>Static LS</strong> (30 L/min compatible)</td>
+              <td>P→priority CF, T→filtr, EF→orbitrol P, L/R→orbitrol L/R (oryg.), LS→priority LS, LSO→orbitrol LS, G/D→cylinder. Czujnik na M4. :contentReference[oaicite:10]{index=10}</td>
+              <td>W rzadkim orbitrolu Danfoss bez LS, z dodat. EF — łącz jak Open center (EF zostaje). :contentReference[oaicite:11]{index=11}</td>
+            </tr>
+            <tr>
+              <td>Closed center — <strong>Dynamic LS</strong> (30 L/min compatible)</td>
+              <td>Jak Static LS (P/T/EF/LR/LS/LSO/GD). Czujnik na M4. :contentReference[oaicite:12]{index=12}</td>
+              <td>Poluzuj śrubę M5×50 (poz. 9) o pół obrotu w lewo. :contentReference[oaicite:13]{index=13}</td>
+            </tr>
+            <tr>
+              <td>60 L/min — <strong>Closed center</strong></td>
+              <td>P→priority CF, T→filtr, EF→orbitrol P, L/R→orbitrol L/R i cylinder, LS→priority LS, LS2→orbitrol LS. Czujnik na M1. :contentReference[oaicite:14]{index=14}</td>
+              <td>P/T/EF G1/2; L/R G3/8. :contentReference[oaicite:15]{index=15}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin-top:8px">Wiązki prowadź z dala od gorących elementów; antenę radiową trzymaj w dystansie od GNSS. Zasilanie podłącz najpierw do minusa akumulatora. :contentReference[oaicite:16]{index=16}</p>
+    </section>
+
+    <section class="card">
+      <h2>🧪 Kalibracja czujnika ciśnienia & test kierunku kół</h2>
+      <div class="grid grid-2">
+        <div>
+          <h3 style="margin-top:0">Kalibracja progu „Manual Intervention”</h3>
+          <ol>
+            <li>W <em>Settings → Manual Intervention</em> skręć koła do oporu i odczytaj max napięcie „Real-time pressure” (R).</li>
+            <li>Ustaw próg (T) ≈ 0,7×R (zwykle ~1,54 V przy R≈2,2 V).</li>
+            <li>Jeśli do wyzwolenia potrzeba zbyt dużego ruchu kierownicą, stopniowo obniż T. :contentReference[oaicite:17]{index=17}</li>
+          </ol>
+        </div>
+        <div>
+          <h3 style="margin-top:0">Driver Debugging</h3>
+          <ol>
+            <li><em>Settings → Technical Support → Driver Debugging</em>.</li>
+            <li>Start → Clockwise/Counterclockwise: koła muszą skręcać zgodnie z komendą.</li>
+            <li>Jeśli na odwrót — zamień wtyczki L/R na zaworze. Zakończ test i wróć do mapy. :contentReference[oaicite:18]{index=18}</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>📎 Schematy i pliki do pobrania</h2>
+      <ul>
+        <li><a href="Sveaverken%20F100H%20Hardware%20Installation%20Manual.pdf" target="_blank" rel="noopener">F100H Hardware Installation Manual (PDF)</a> — ogólne wskazówki montażowe, prowadzenie wiązek, bezpieczeństwo. :contentReference[oaicite:19]{index=19}</li>
+        <li><a href="Valve%20Installation%20Guide.pdf" target="_blank" rel="noopener">Hydraulic Valve Installation Instruction (PDF)</a> — scenariusze połączeń, porty, 6/2, LS. :contentReference[oaicite:20]{index=20}</li>
+        <li><a href="F100H%20Relay%20Scheme%20for%20cutoff%20valve.pdf" target="_blank" rel="noopener">F100H — schemat przekaźnika zaworu odcinającego (PDF)</a>. :contentReference[oaicite:21]{index=21}</li>
+        <li><a href="Applicability_Check_Sveaverken_F100H.pdf" target="_blank" rel="noopener">Checklist kompatybilności & sprawdzone modele (PDF)</a>. :contentReference[oaicite:22]{index=22}</li>
+        <!-- Jeśli wrzucisz XLSX do katalogu strony, odkomentuj:
+        <li><a href="F100H_Non-CAN_Compatible_Post-installed_Valve_Models_Collect_Form.xlsx" target="_blank" rel="noopener">Lista kompatybilnych zaworów (XLSX)</a></li>
+        -->
+      </ul>
+      <div class="notice" style="margin-top:8px">
+        <strong>Tip:</strong> Czujnik ciśnienia zwykle montujemy na porcie zasilania zaworu (P/MEF/M1–M4 wg modelu zaworu). Jeśli P nie ma miejsca, zastosuj punkt wg dokumentacji konkretnego zaworu. :contentReference[oaicite:23]{index=23}
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Sveaverken — <a href="https://www.sveaverken.com" target="_blank" rel="noopener">sveaverken.com</a></p>
+  </footer>
+</body>
+</html>
