@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Sveaverken F100H — NON-CAN (Hydraulika)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="F100H w traktorach bez CAN: jak rozpoznać układ, dobrać zawór, podłączyć hydraulikę i wiązki, skalibrować czujnik ciśnienia oraz przetestować działanie." />
+  <meta name="description" content="F100H w traktorach bez CAN: rodzaje układów, typy orbitroli, Reactive/Non-Reactive, wybór zaworu, podłączenie, kalibracja i testy." />
 
   <!-- Google Translate -->
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
@@ -25,44 +25,34 @@
     :root{
       --brand:#002b5c; --brand-2:#003366; --text:#111; --muted:#666;
       --bg:#fff; --card:#f7f9fc; --shadow:0 2px 8px rgba(0,0,0,.12);
-      --radius:12px; --accent:#005bbb;
+      --radius:12px; --accent:#005bbb; --warn:#ffb300; --danger:#e53935;
     }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg)}
-    a{color:var(--accent); text-decoration:none} a:hover{text-decoration:underline}
-    nav{background:var(--brand); position:sticky; top:0; z-index:1000; box-shadow:0 2px 6px rgba(0,0,0,.2)}
-    .nav-inner{max-width:1200px; margin:0 auto; display:flex; gap:16px; align-items:center; padding:10px 20px; flex-wrap:wrap}
-    .brand{color:#fff; font-weight:700; font-size:18px; margin-right:auto}
-    nav a{color:#fff; padding:6px 8px; border-radius:8px}
-    nav a:hover, nav a:focus-visible{text-decoration:underline; outline:none}
-    #google_translate_element{margin-left:auto}
-
-    header{background:linear-gradient(135deg,var(--brand-2),#004a8f); color:#fff; padding:36px 20px}
-    .hero{max-width:1200px; margin:0 auto}
-    .hero h1{margin:0 0 8px; font-size:28px}
-    .hero p{margin:0; color:#e6eef9}
-
-    main{max-width:1200px; margin:0 auto; padding:24px 20px}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    nav{background:var(--brand);position:sticky;top:0;z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;gap:16px;align-items:center;padding:10px 20px;flex-wrap:wrap}
+    .brand{color:#fff;font-weight:700;font-size:18px;margin-right:auto}
+    nav a{color:#fff;padding:6px 8px;border-radius:8px;text-decoration:none}
+    nav a:hover{text-decoration:underline}
+    header{background:linear-gradient(135deg,var(--brand-2),#004a8f);color:#fff;padding:36px 20px}
+    .hero{max-width:1200px;margin:0 auto}
+    .hero h1{margin:0 0 8px;font-size:28px}
+    .hero p{margin:0;color:#e6eef9}
+    main{max-width:1200px;margin:0 auto;padding:24px 20px}
     section{margin:28px 0}
-    h2{margin:0 0 12px; font-size:22px}
-    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px}
-    .muted{color:var(--muted)}
-    .grid{display:grid; gap:16px}
+    h2{margin:0 0 12px;font-size:22px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .grid{display:grid;gap:16px}
     .grid-2{grid-template-columns:repeat(2,minmax(260px,1fr))}
-    @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
-
-    table{width:100%; border-collapse:collapse; font-size:15px}
-    th,td{border:1px solid #e5e7eb; padding:8px 10px; text-align:left}
-    thead tr{background:#f0f0f0}
-
-    .notice{background:#fff8e1; border-left:4px solid #ffb300; padding:10px 12px; border-radius:8px}
-    .danger{background:#ffeaea; border-left:4px solid #e53935; padding:10px 12px; border-radius:8px}
-    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .btn{display:inline-block; background:var(--accent); color:#fff; padding:9px 12px; border-radius:10px; font-weight:600; box-shadow:var(--shadow)}
-    .btn.secondary{background:#fff; color:var(--accent); border:1px solid #cfe2ff}
-    .img-wrap{background:#fff; border-radius:12px; box-shadow:var(--shadow); padding:8px; overflow:auto}
-    .img-wrap img{max-width:100%; height:auto; display:block; border-radius:8px}
+    .grid-3{grid-template-columns:repeat(3,minmax(260px,1fr))}
+    @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    .notice{background:#fff8e1;border-left:4px solid var(--warn);padding:10px;border-radius:8px}
+    .danger{background:#ffeaea;border-left:4px solid var(--danger);padding:10px;border-radius:8px}
+    .img-wrap{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:8px}
+    .img-wrap img{max-width:100%;border-radius:8px}
+    .scenario{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:14px}
+    .scenario ul{margin:0;padding-left:18px}
+    .ports{font-size:14px;margin-top:8px}
+    .ports code{background:#eef2f7;padding:0 4px;border-radius:6px}
   </style>
 </head>
 <body>
@@ -82,142 +72,143 @@
   <header>
     <div class="hero">
       <h1>F100H NON-CAN — montaż hydrauliczny</h1>
-      <p>Jak rozpoznać układ, dobrać zawór, podłączyć przewody i wiązki, skalibrować system i sprawdzić kierunek skrętu.</p>
+      <p>Rodzaje układów kierowniczych, typy orbitroli, wybór zaworu, podłączenie przewodów i test działania.</p>
     </div>
   </header>
 
   <main>
-    <!-- O co chodzi -->
     <section class="card">
-      <h2>🔎 O co chodzi?</h2>
-      <p>Ta instrukcja dotyczy ciągników bez fabrycznego sterowania po CAN (brak „SteerReady”). Sterowanie dodajemy przez zawór hydrauliczny proporcjonalny i — jeśli trzeba — zawór 6/2.</p>
-      <div class="danger" style="margin-top:10px">
-        <strong>Bezpieczeństwo:</strong> hydraulikę montuje wykwalifikowany serwis. Nie używaj autosterowania na drodze. Operator musi zawsze móc przejąć kierownicę i zatrzymać maszynę.
-      </div>
+      <h2>🔎 Cel</h2>
+      <p>Instrukcja dla ciągników bez fabrycznego sterowania CAN („SteerReady”). Autosterowanie dodajemy przez zawór hydrauliczny i — w razie potrzeby — zawór 6/2.</p>
+      <div class="danger"><strong>Bezpieczeństwo:</strong> montaż tylko przez wykwalifikowany serwis. Autosterowania nie wolno używać na drodze.</div>
     </section>
 
-    <!-- Jaki masz układ -->
-    <section>
-      <h2>📋 Jaki masz układ kierowniczy?</h2>
+    <section class="card">
+      <h2>🧠 Open Center i Closed Center</h2>
       <div class="grid grid-2">
-        <div class="card">
-          <h3 style="margin-top:0">Najczęstsze warianty</h3>
+        <div>
+          <h3>Open Center (OC)</h3>
           <ul>
-            <li><strong>Open center:</strong> może być <em>Reactive</em> lub <em>Non-reactive</em>.</li>
-            <li><strong>Closed center (LS):</strong> LS <em>dynamic</em> albo <em>static</em> (zwykle Non-reactive).</li>
+            <li>Pompa pracuje ciągle, olej wraca do zbiornika, gdy nie skręcasz.</li>
+            <li>Proste, starsze rozwiązanie.</li>
+            <li>Brak przewodu LS.</li>
           </ul>
-          <p class="muted">Zerknij na tabliczkę orbitrola (np. ON/ORM/CN/LSRM) lub do instrukcji ciągnika.</p>
         </div>
-        <div class="card">
-          <h3 style="margin-top:0">Szybka próba w polu</h3>
-          <p>Podłącz jak do Non-reactive i włącz autosterowanie:</p>
+        <div>
+          <h3>Closed Center (CC, z LS)</h3>
           <ul>
-            <li>kierownica sama się kręci → to <strong>Reactive</strong>,</li>
-            <li>kierownica stoi w miejscu → to <strong>Non-reactive</strong>.</li>
+            <li>Pompa podaje przepływ dopiero po sygnale LS (Load Sensing).</li>
+            <li>Bardziej wydajne, w nowszych ciągnikach.</li>
+            <li>Cienki przewód LS do orbitrola.</li>
           </ul>
-          <p class="muted">Przy Reactive i zaworze open-center dodaj zawór 6/2.</p>
         </div>
       </div>
     </section>
 
-    <!-- Jaki zawór -->
     <section class="card">
-      <h2>🧩 Jaki zawór wybrać?</h2>
+      <h2>🔄 Reactive i Non-Reactive</h2>
+      <div class="grid grid-2">
+        <div>
+          <h3>Reactive</h3>
+          <p>Kierownica sama się obraca podczas auto-skrętu. Zwykle wymaga zaworu 6/2.</p>
+        </div>
+        <div>
+          <h3>Non-Reactive</h3>
+          <p>Kierownica stoi nieruchomo przy auto-skręcie. Instalacja prostsza, zwykle bez 6/2.</p>
+        </div>
+      </div>
+      <div class="notice"><strong>Szybki test:</strong> Podłącz jak Non-Reactive i włącz auto-skręt. Kierownica kręci się → masz Reactive; stoi → Non-Reactive.</div>
+    </section>
+
+    <section class="card">
+      <h2>🧩 Typy orbitroli</h2>
+      <table>
+        <thead>
+          <tr><th>Oznaczenie</th><th>Opis</th><th>LS</th><th>Reakcja</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>OSPB / OSPC</td><td>Orbitrol do OC, brak portu LS</td><td>Brak</td><td>Zwykle Non-Reactive</td></tr>
+          <tr><td>OSPC-LS / OSPD-LS</td><td>Orbitrol z Load Sensing</td><td>Tak</td><td>Non-Reactive</td></tr>
+          <tr><td>LSRM / CN / ON / ORM</td><td>Skróty zależne od producenta, wskazują typ reakcji</td><td>Różnie</td><td>Sprawdź tabliczkę</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>⚙️ Wybór zaworu</h2>
       <ul>
-        <li>30 L/min — open center,</li>
-        <li>60 L/min — open center,</li>
-        <li>60 L/min — closed center,</li>
-        <li>30 L/min — <strong>compatible</strong> (obsłuży open/closed do 30 L/min, LS static/dynamic).</li>
+        <li>30 L/min — open center</li>
+        <li>60 L/min — open center</li>
+        <li>60 L/min — closed center</li>
+        <li><strong>Zawór uniwersalny 30 L/min</strong> — obsługuje OC i CC, LS static/dynamic</li>
       </ul>
     </section>
 
-    <!-- Schemat okablowania -->
     <section>
-      <h2>🗺️ Okablowanie F100H (NON-CAN)</h2>
+      <h2>🗺️ Okablowanie</h2>
       <div class="img-wrap">
-        <img src="F100Hnoncanwires.jpg" alt="Schemat wiązek i podłączeń F100H NON-CAN">
+        <img src="F100Hnoncanwires.jpg" alt="Schemat wiązek F100H NON-CAN">
       </div>
-      <p class="muted" style="margin-top:8px">Na rysunku: czujnik ciśnienia (zwykle port P na zaworze), czujnik kąta, wiązka zaworu proporcjonalnego, wiązka zaworu przeciwciśnienia oraz ewentualny powrót do back-pressure.</p>
+      <p class="muted">Na schemacie: czujnik ciśnienia, czujnik kąta, wiązka zaworu proporcjonalnego i ewentualny powrót do back-pressure.</p>
     </section>
 
-    <!-- Połączenia skrót -->
-    <section class="card">
-      <h2>🔌 Połączenia hydrauliczne — ściąga</h2>
-      <div style="overflow:auto">
-        <table>
-          <thead>
-            <tr><th>Scenariusz</th><th>Jak połączyć</th><th>Uwaga</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Open center — <strong>Non-reactive</strong></td>
-              <td>P → pompa, T → filtr/zbiornik, EF → orbitrol P, L → cylinder/Orbitrol L (trójnik), R → cylinder/Orbitrol R (trójnik). Czujnik ciśnienia na porcie MEF.</td>
-              <td>30 L/min: P/T/EF/A/B G3/8, pozostałe G1/4. 60 L/min: P/T/EF G1/2, A/B G3/8.</td>
-            </tr>
-            <tr>
-              <td>Open center — <strong>Reactive</strong> + zawór 6/2</td>
-              <td>P → pompa, T → filtr, EF → orbitrol P, L → 6/2 C2, R → 6/2 C3; 6/2: P1/P2 → cylinder, C1/C4 → orbitrol L/R (oryg. przewody).</td>
-              <td>Auto-ster: podaj 12 V na 6/2 (przełącza na zawór). Manual/off: C1/C4 wraca na orbitrol.</td>
-            </tr>
-            <tr>
-              <td>30 L/min <strong>compatible</strong> — Open center</td>
-              <td>P → pompa, T → filtr, EF → orbitrol P, L/R → orbitrol L/R (oryg.), G/D → cylinder. Czujnik na porcie M3.</td>
-              <td>P/T G1/2; L/R/D/G/EF G3/8.</td>
-            </tr>
-            <tr>
-              <td>Closed center — <strong>LS static</strong> (30 L/min compatible)</td>
-              <td>P → priority CF, T → filtr, EF → orbitrol P, L/R → orbitrol L/R (oryg.), LS → priority LS, LSO → orbitrol LS, G/D → cylinder. Czujnik na M4.</td>
-              <td>Jeśli orbitrol bez LS, ale z dodatkowym EF — łącz jak open center (EF zostaje).</td>
-            </tr>
-            <tr>
-              <td>Closed center — <strong>LS dynamic</strong> (30 L/min compatible)</td>
-              <td>Połączenia jak wyżej (P/T/EF/LR/LS/LSO/GD). Czujnik na M4.</td>
-              <td>Poluzuj śrubę M5×50 (poz. 9) o ok. pół obrotu w lewo.</td>
-            </tr>
-            <tr>
-              <td>60 L/min — <strong>Closed center</strong></td>
-              <td>P → priority CF, T → filtr, EF → orbitrol P, L/R → orbitrol L/R i cylinder, LS → priority LS, LS2 → orbitrol LS. Czujnik na M1.</td>
-              <td>P/T/EF G1/2; L/R G3/8.</td>
-            </tr>
-          </tbody>
-        </table>
+    <section>
+      <h2>🔌 Ściąga — scenariusze</h2>
+      <div class="grid grid-3">
+        <div class="scenario">
+          <h3>OC — Non-Reactive</h3>
+          <ul><li>P → pompa</li><li>T → filtr</li><li>EF → orbitrol P</li><li>L/R → trójniki do orbitrola i cylindra</li><li>Czujnik → MEF</li></ul>
+          <div class="ports">30 L/min: P/T/EF/A/B G3/8, reszta G1/4 • 60 L/min: P/T/EF G1/2, A/B G3/8</div>
+        </div>
+        <div class="scenario">
+          <h3>OC — Reactive + 6/2</h3>
+          <ul><li>P → pompa, T → filtr</li><li>EF → orbitrol P</li><li>L/R → zawór 6/2 (C2/C3)</li><li>6/2: P1/P2 → cylinder, C1/C4 → orbitrol</li></ul>
+          <div class="ports">Autoster: +12 V na 6/2. Manual: C1/C4 wraca do orbitrola.</div>
+        </div>
+        <div class="scenario">
+          <h3>Uniwersalny 30 L/min — OC</h3>
+          <ul><li>P → pompa, T → filtr</li><li>EF → orbitrol P</li><li>L/R → orbitrol</li><li>G/D → cylinder</li><li>Czujnik → M3</li></ul>
+        </div>
+        <div class="scenario">
+          <h3>CC — LS static (uniwersalny 30)</h3>
+          <ul><li>P → CF, T → filtr</li><li>EF → orbitrol P</li><li>L/R → orbitrol</li><li>LS → CF, LSO → orbitrol LS</li><li>G/D → cylinder</li><li>Czujnik → M4</li></ul>
+        </div>
+        <div class="scenario">
+          <h3>CC — LS dynamic (uniwersalny 30)</h3>
+          <ul><li>Jak LS static</li><li>Czujnik → M4</li><li>Regulacja: poluzuj śrubę M5×50 o pół obrotu</li></ul>
+        </div>
+        <div class="scenario">
+          <h3>CC — 60 L/min</h3>
+          <ul><li>P → CF, T → filtr</li><li>EF → orbitrol P</li><li>L/R → orbitrol + cylinder</li><li>LS → CF, LS2 → orbitrol LS</li><li>Czujnik → M1</li></ul>
+        </div>
       </div>
-      <p class="muted" style="margin-top:8px">Wiązki prowadź z dala od gorących elementów i ostrych krawędzi. Antenę radiową montuj w odstępie od anteny GNSS. Zasilanie podłączaj zaczynając od minusa akumulatora.</p>
     </section>
 
-    <!-- Kalibracja i test -->
     <section class="card">
-      <h2>🧪 Kalibracja i test kierunku kół</h2>
+      <h2>🧪 Kalibracja i test</h2>
       <div class="grid grid-2">
         <div>
-          <h3 style="margin-top:0">Próg „Manual Intervention”</h3>
+          <h3>Manual Intervention</h3>
           <ol>
-            <li>Wejdź: <em>Settings → Manual Intervention</em>.</li>
-            <li>Skręć koła do oporu i sprawdź maksymalne napięcie „Real-time pressure” (R).</li>
-            <li>Ustaw próg (T) ≈ 0,7 × R (typowo ok. 1,5 V przy R ≈ 2,2 V).</li>
-            <li>Jeśli reakcja jest zbyt „twarda”, obniżaj T małymi krokami.</li>
+            <li>Wejdź w Settings → Manual Intervention</li>
+            <li>Skręć koła do oporu, sprawdź napięcie R</li>
+            <li>Ustaw próg T ≈ 0,7 × R</li>
           </ol>
         </div>
         <div>
-          <h3 style="margin-top:0">Sprawdzenie kierunku (Driver Debugging)</h3>
+          <h3>Driver Debugging</h3>
           <ol>
-            <li>Wejdź: <em>Settings → Technical Support → Driver Debugging</em>.</li>
-            <li>Start → <em>Clockwise/Counterclockwise</em>. Koła mają skręcać zgodnie z poleceniem.</li>
-            <li>Jeśli jest odwrotnie — zamień wtyczki L/R na zaworze. Zakończ test i wróć do mapy.</li>
+            <li>Wejdź w Settings → Technical Support → Driver Debugging</li>
+            <li>Testuj skręt w prawo/lewo</li>
+            <li>Jeśli odwrotnie — zamień wtyczki L/R</li>
           </ol>
         </div>
-      </div>
-    </section>
-
-    
-      <div class="notice" style="margin-top:8px">
-        <strong>Wskazówka:</strong> czujnik ciśnienia zwykle montujemy w porcie zasilania zaworu (np. P lub M1–M4 — zależnie od modelu).
       </div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2024 Sveaverken — <a href="https://www.sveaverken.com" target="_blank" rel="noopener">sveaverken.com</a></p>
+    <p>&copy; 2024 Sveaverken — <a href="https://www.sveaverken.com" target="_blank">sveaverken.com</a></p>
   </footer>
 </body>
 </html>
