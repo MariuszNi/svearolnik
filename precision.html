@@ -1,107 +1,17 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8" />
-  <title>Rolnictwo Precyzyjne – Wprowadzenie | Sveaverken</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Proste wprowadzenie do rolnictwa precyzyjnego dla początkujących: GPS, autosterowanie, ISOBUS, RTK/NTRIP, mapy pól i praktyczne korzyści." />
-
-  <!-- Utrzymujemy spójny styl ze stroną główną -->
-  <style>
-    :root{
-      --brand:#002b5c;
-      --brand-2:#003366;
-      --text:#111;
-      --muted:#666;
-      --bg:#fff;
-      --card:#f7f9fc;
-      --shadow:0 2px 8px rgba(0,0,0,.12);
-      --radius:12px;
-      --accent:#005bbb;
+<!-- Google Translate -->
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  <script>
+    function googleTranslateElementInit() {
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'pl',
+          includedLanguages: 'en,es,fr,de,it,pt,ru,uk,cs,sk,hu,ro,bg,el,tr,zh-CN,ja,ko',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      } catch(e) {}
     }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg);}
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
-    nav{background:var(--brand); position:sticky; top:0; z-index:1000; box-shadow:0 2px 6px rgba(0,0,0,.2);}
-    .nav-inner{max-width:1200px; margin:0 auto; display:flex; gap:16px; align-items:center; padding:10px 20px; flex-wrap:wrap;}
-    .brand{color:#fff; font-weight:700; font-size:18px; margin-right:auto}
-    nav a{color:#fff; text-decoration:none; padding:6px 8px; border-radius:8px}
-    nav a:focus-visible, nav a:hover{text-decoration:underline; outline:none}
-
-    header{background:linear-gradient(135deg,var(--brand-2),#004a8f); color:#fff; padding:40px 20px}
-    .hero{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.2fr .8fr; gap:32px; align-items:center}
-    .hero h1{margin:0 0 12px; font-size:32px}
-    .hero p{margin:0 0 16px; color:#e6eef9}
-    .hero .card{background:#fff; color:#111}
-
-    main{max-width:1200px; margin:0 auto; padding:24px 20px}
-    section{margin:28px 0}
-    h2{margin:0 0 12px; font-size:24px}
-    .muted{color:var(--muted)}
-    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;}
-    .grid{display:grid; gap:16px}
-    .grid-2{grid-template-columns:repeat(2,minmax(240px,1fr))}
-    .grid-3{grid-template-columns:repeat(3,minmax(220px,1fr))}
-    .grid-4{grid-template-columns:repeat(4,minmax(200px,1fr))}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid-4{grid-template-columns:repeat(2,minmax(200px,1fr))}.grid-3{grid-template-columns:repeat(2,minmax(200px,1fr))}}
-    @media (max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
-
-    .feature{background:#fff; border-radius:12px; padding:16px; text-align:center; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease;}
-    .feature:hover{transform:translateY(-4px); box-shadow:0 4px 14px rgba(0,0,0,.2);}
-    .feature img{width:64px; height:64px; object-fit:contain; margin-bottom:10px}
-    .feature h3{margin:6px 0 8px; font-size:18px}
-
-    .bullet-ok{display:flex; gap:10px; align-items:flex-start; margin:8px 0}
-    .bullet-ok span{font-size:20px; line-height:1}
-
-    .cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:12px}
-    .btn{display:inline-block; background:var(--accent); color:#fff; padding:10px 14px; border-radius:10px; font-weight:600; box-shadow:var(--shadow)}
-    .btn:focus-visible{outline:3px solid #99c2ff}
-    .btn.secondary{background:#fff; color:var(--accent); border:1px solid #cfe2ff}
-
-    details{background:#fff; border-radius:10px; padding:12px 14px; box-shadow:var(--shadow)}
-    summary{cursor:pointer; font-weight:600}
-    summary:focus-visible{outline:3px solid #99c2ff}
-
-    footer{padding:24px 20px; text-align:center; color:var(--muted)}
-  </style>
-</head>
-<body>
-  <!-- Nawigacja spójna z index.html -->
-  <nav>
-    <div class="nav-inner">
-      <div class="brand">Sveaverken</div>
-      <a href="index.html">Strona główna</a>
-      <a href="precision.html" aria-current="page">Rolnictwo Precyzyjne</a>
-      <a href="NTRIP.html">NTRIP</a>
-      <a href="isobus.html">ISOBUS</a>
-      <a href="nmea.html">NMEA 0183</a>
-      <a href="Videos.html">Filmy</a>
-    </div>
-  </nav>
-
-  <header>
-    <div class="hero">
-      <div>
-        <h1>Rolnictwo Precyzyjne – w prostych słowach</h1>
-        <p>Jak zacząć z GPS, autosterowaniem, RTK/NTRIP i ISOBUS, żeby <strong>pracować precyzyjniej, oszczędniej i szybciej</strong>.</p>
-        <div class="cta">
-          <a class="btn" href="Videos.html">🎥 Zobacz filmy</a>
-          <a class="btn secondary" href="https://www.sveaverken.com" target="_blank" rel="noopener">🌐 Sveaverken.com</a>
-        </div>
-      </div>
-      <div class="card">
-        <h3 style="margin-top:0">Co zyskasz?</h3>
-        <div class="bullet-ok"><span>✅</span><div>Mniej nakładek i omijaków – oszczędność paliwa i nawozów</div></div>
-        <div class="bullet-ok"><span>✅</span><div>Lepsza dokładność przejazdów i powtarzalność zabiegów</div></div>
-        <div class="bullet-ok"><span>✅</span><div>Wygoda operatora – mniejsze zmęczenie w długich pracach</div></div>
-        <div class="bullet-ok"><span>✅</span><div>Dokumentacja i porządek w danych o polach</div></div>
-      </div>
-    </div>
-  </header>
-
+  </script>
   <main>
     <!-- Czym jest RP -->
     <section class="card">
@@ -114,22 +24,22 @@
       <h2>🛰️ Główne elementy</h2>
       <div class="grid grid-4">
         <div class="feature">
-          <img src="img/gps-tractor.png" alt="Nawigacja GPS" loading="lazy">
+          <img src="gps-tractor.png" alt="Nawigacja GPS" loading="lazy">
           <h3>Nawigacja GPS</h3>
           <p>Wyświetla linie prowadzenia i pomaga utrzymać idealne przejazdy.</p>
         </div>
         <div class="feature">
-          <img src="img/map-field.png" alt="Mapy pól" loading="lazy">
+          <img src="map-field.png" alt="Mapy pól" loading="lazy">
           <h3>Mapy pól</h3>
           <p>Granice pól, ścieżki technologiczne, linie A+/AB, archiwum zabiegów.</p>
         </div>
         <div class="feature">
-          <img src="img/fertilizer.png" alt="Nawożenie zmienne" loading="lazy">
+          <img src="fertilizer.png" alt="Nawożenie zmienne" loading="lazy">
           <h3>Nawożenie zmienne</h3>
           <p>Stosowanie nawozu tylko tam, gdzie jest potrzebny (VRC).</p>
         </div>
         <div class="feature">
-          <img src="img/isobus.png" alt="ISOBUS" loading="lazy">
+          <img src="isobus.png" alt="ISOBUS" loading="lazy">
           <h3>ISOBUS</h3>
           <p>Standard komunikacji traktor–maszyna (VT, TC, Section Control).</p>
         </div>
