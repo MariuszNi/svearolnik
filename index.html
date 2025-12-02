@@ -286,7 +286,32 @@
     <img src="tractor.png" class="tractor" alt="" />
     <div class="smoke"></div>
   </div>
-
+ <!-- 🔔 Banner z przekierowaniem na nową stronę -->
+  <div id="redirect-overlay" class="redirect-overlay" role="dialog" aria-modal="true" aria-labelledby="redirect-title">
+    <div class="redirect-box">
+      <button type="button" class="redirect-close" aria-label="Zamknij / Close" onclick="cancelRedirect(true)">×</button>
+      <h2 id="redirect-title">Nowa strona Sveaverken Polska</h2>
+      <p>
+        Nowa oficjalna strona Sveaverken Polska działa pod adresem
+        <strong>www.sveaverken.com.pl</strong>.<br>
+        Za <span class="redirect-count">10</span> sekund zostaniesz automatycznie przekierowany.
+      </p>
+      <hr style="margin:14px 0;">
+      <p>
+        <strong>EN:</strong> The new official website for Sveaverken Poland is available at
+        <strong>www.sveaverken.com.pl</strong>.<br>
+        You will be redirected automatically in <span class="redirect-count">10</span> seconds.
+      </p>
+      <div class="redirect-actions">
+        <button type="button" class="redirect-secondary" onclick="cancelRedirect(true)">
+          Zostań tutaj / Stay here
+        </button>
+        <button type="button" class="redirect-primary" onclick="goToNewSite()">
+          Przejdź teraz / Go now
+        </button>
+      </div>
+    </div>
+  </div>
   <nav>
     <div class="nav-inner">
       <div class="brand">Sveaverken</div>
