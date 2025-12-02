@@ -113,85 +113,171 @@
 
   </style>
 
-  <script>
+   <script>
+    const NEW_SITE_URL = 'https://www.sveaverken.com.pl';
+    let redirectTimeoutId = null;
+    let redirectIntervalId = null;
+    let redirectCancelled = false;
+    let redirectSeconds = 10;
+
+    // ---- Google Translate ----
     function googleTranslateElementInit() {
       try {
         new google.translate.TranslateElement({
           pageLanguage: 'pl',
-          includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk',
+          includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk,sl',
           layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false
         }, 'google_translate_element');
       } catch(e) {}
     }
 
-    async function fetchKpData(){
-      const res=await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
-      return await res.json();
+    function translatePageToBrowserLanguage() {
+      try{
+        var userLang = (navigator.language || navigator.userLanguage || 'pl').split('-')[0];
+        if(userLang==='pl') return;
+      }catch(e){}
     }
+
+    // ---- KP Index + mini chart ----
+    let kpChart;
+    async function fetchKpData() {
+      const res = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+      const data = await res.json();
+      return data;
+    }
+
     function colorForKp(kp){
-      if(kp>=7)return '#e53935';
-      if(kp>=6)return '#ff9800';
-      if(kp>=5)return '#ffeb3b';
+      if (kp >= 7) return '#e53935';
+      if (kp >= 6) return '#ff9800';
+      if (kp >= 5) return '#ffeb3b';
       return '#8bc34a';
     }
-    let kpChart;
-    async function updateKpIndex(){
-      try{
-        const data=await fetchKpData();
-        const last=data[data.length-1];
-        const kp=parseFloat(last.kp_index).toFixed(1);
-        const box=document.getElementById('kp-widget');
-        box.textContent=`Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
-        box.style.backgroundColor=colorForKp(parseFloat(kp));
 
-        const tail=data.slice(-180);
-        const labels=tail.map(d=>d.time_tag.slice(11,19));
-        const values=tail.map(d=>Number(d.kp_index));
-        const ctx=document.getElementById('kpChart').getContext('2d');
-        if(kpChart){
-          kpChart.data.labels=labels;
-          kpChart.data.datasets[0].data=values;
-          kpChart.update();
-        }else{
-          kpChart=new Chart(ctx,{
-            type:'line',
-            data:{labels,datasets:[{label:'Kp (ostatnie 3h, 1-min)',data:values,tension:.25,pointRadius:0,borderWidth:2}]},
-            options:{responsive:true,maintainAspectRatio:false,scales:{y:{suggestedMin:0,suggestedMax:9,ticks:{stepSize:1}},x:{ticks:{maxTicksLimit:8}}},plugins:{legend:{display:false}}}
+    async function updateKpIndex() {
+      try{
+        const data = await fetchKpData();
+        const last = data[data.length-1];
+        const kp = parseFloat(last.kp_index).toFixed(1);
+        const box = document.getElementById('kp-widget');
+        box.textContent = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+        box.style.backgroundColor = colorForKp(parseFloat(kp));
+
+        // Chart: last 180 mins
+        const tail = data.slice(-180);
+        const labels = tail.map(d => d.time_tag.slice(11,19)); // HH:MM:SS
+        const values = tail.map(d => Number(d.kp_index));
+
+        const ctx = document.getElementById('kpChart').getContext('2d');
+        if (kpChart) { kpChart.data.labels = labels; kpChart.data.datasets[0].data = values; kpChart.update(); }
+        else {
+          kpChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{ label: 'Kp (ostatnie 3h, 1-min)', data: values, tension:.25, pointRadius:0, borderWidth:2 }]
+            },
+            options: {
+              responsive:true,
+              maintainAspectRatio:false,
+              interaction:{mode:'index', intersect:false},
+              scales:{
+                y:{ suggestedMin:0, suggestedMax:9, ticks:{ stepSize:1 } },
+                x:{ ticks:{ maxTicksLimit:8 } }
+              },
+              plugins:{ legend:{ display:false } }
+            }
           });
         }
-      }catch(e){console.error('KP fetch error',e);}
+      }catch(e){
+        console.error('KP fetch error', e);
+      }
     }
-    setInterval(updateKpIndex,60000);
+    setInterval(updateKpIndex, 60000);
 
-    function fetchNews(){
+    // ---- News popup ----
+    function fetchNews() {
       fetch('aktual.txt')
         .then(r=>r.text())
-        .then(t=>{document.getElementById('news-content').innerHTML=t.replace(/\n/g,'<br>');})
-        .catch(err=>console.error('Błąd wczytywania aktualności:',err));
+        .then(t=>{ document.getElementById('news-content').innerHTML = t.replace(/\n/g,'<br>'); })
+        .catch(err=>console.error('Błąd wczytywania aktualności:', err));
     }
-    function openPopup(){document.getElementById('popup').style.display='block';}
-    function closePopup(){document.getElementById('popup').style.display='none';}
+    function openPopup(){ document.getElementById('popup').style.display='block'; }
+    function closePopup(){ document.getElementById('popup').style.display='none'; }
+
+    // ---- Search filter ----
     function filterContent(){
-      const q=document.getElementById('search-input').value.trim().toLowerCase();
-      const sections=document.querySelectorAll('main section');
+      const q = document.getElementById('search-input').value.trim().toLowerCase();
+      const sections = document.querySelectorAll('main section');
       sections.forEach(section=>{
-        const items=section.querySelectorAll('li, p, a, h2, h3');
-        let hit=false;
+        const items = section.querySelectorAll('li, p, a, h2, h3');
+        let hit = false;
         items.forEach(el=>{
-          const txt=(el.textContent||'').toLowerCase();
-          const show=!q||txt.includes(q);
-          el.style.display=show?'':'none';
-          if(show)hit=true;
+          const txt = (el.textContent||'').toLowerCase();
+          const show = !q || txt.includes(q);
+          el.style.display = show ? '' : 'none';
+          if(show) hit = true;
         });
-        section.style.display=hit?'':'none';
+        section.style.display = hit ? '' : 'none';
       });
     }
-    document.addEventListener('DOMContentLoaded',()=>{
+
+    // ---- Redirect banner ----
+    function updateRedirectCounter(){
+      document.querySelectorAll('.redirect-count').forEach(el=>{
+        el.textContent = redirectSeconds;
+      });
+    }
+
+    function startRedirectCountdown(){
+      const overlay = document.getElementById('redirect-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      redirectSeconds = 10;
+      redirectCancelled = false;
+      updateRedirectCounter();
+
+      redirectTimeoutId = setTimeout(()=>{
+        if(!redirectCancelled) goToNewSite();
+      }, redirectSeconds * 1000);
+
+      redirectIntervalId = setInterval(()=>{
+        if(redirectCancelled) return;
+        redirectSeconds--;
+        if(redirectSeconds <= 0){
+          clearInterval(redirectIntervalId);
+          return;
+        }
+        updateRedirectCounter();
+      },1000);
+    }
+
+    function cancelRedirect(hide){
+      redirectCancelled = true;
+      if(redirectTimeoutId) clearTimeout(redirectTimeoutId);
+      if(redirectIntervalId) clearInterval(redirectIntervalId);
+      if(hide){
+        const overlay = document.getElementById('redirect-overlay');
+        if(overlay) overlay.style.display = 'none';
+      }
+    }
+
+    function goToNewSite(){
+      window.location.href = NEW_SITE_URL;
+    }
+
+    function initRedirectBanner(){
+      startRedirectCountdown();
+    }
+
+    // ---- DOM Ready ----
+    document.addEventListener('DOMContentLoaded', ()=>{
+      translatePageToBrowserLanguage();
       fetchNews();
       updateKpIndex();
-      document.getElementById('search-input').addEventListener('input',filterContent);
-      window.addEventListener('click',(e)=>{if(e.target.id==='popup')closePopup();});
+      document.getElementById('search-input').addEventListener('input', filterContent);
+      window.addEventListener('click', (e)=>{ if(e.target.id==='popup') closePopup(); });
+      initRedirectBanner();
     });
   </script>
 </head>
